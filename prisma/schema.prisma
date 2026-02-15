@@ -1,0 +1,220 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  DRIVER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  DRIVER_ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Role      @default(MANAGER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  driver       Driver?
+}
+
+model Vehicle {
+  id              String    @id @default(cuid())
+  name            String
+  category        String
+  capacity        Int
+  features        String[]
+  pricingPerKm    Float
+  driverBata      Float
+  nightCharges    Float
+  registration    String    @unique
+  insuranceExpiry DateTime
+  availability    Boolean   @default(true)
+  imageUrls       String[]
+  bookings        Booking[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  @@index([category, availability])
+}
+
+model Route {
+  id                  String   @id @default(cuid())
+  startLocation       String
+  endLocation         String
+  distanceKm          Float
+  durationMinutes     Int
+  popularStops        String[]
+  seasonInfo          String?
+  oneWayPrice         Float
+  roundTripPrice      Float
+  multiDayPackageRate Float
+  itinerary           String
+  seoTitle            String?
+  seoDescription      String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  @@index([startLocation, endLocation])
+}
+
+model Driver {
+  id             String    @id @default(cuid())
+  name           String
+  photoUrl       String?
+  licenseNumber  String    @unique
+  phone          String    @unique
+  languages      String[]
+  rating         Float     @default(5)
+  verified       Boolean   @default(false)
+  availability   Boolean   @default(true)
+  assignedTrips  Booking[]
+  userId         String?   @unique
+  user           User?     @relation(fields: [userId], references: [id])
+  assignedVehicle String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Customer {
+  id            String    @id @default(cuid())
+  name          String
+  email         String?
+  phone         String    @unique
+  loyaltyPoints Int       @default(0)
+  corporateTag  String?
+  bookings      Booking[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  bookingCode     String        @unique
+  customerId      String
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  pickup          String
+  dropLocation    String
+  tripDate        DateTime
+  returnDate      DateTime?
+  passengers      Int
+  specialRequests String?
+  status          BookingStatus @default(PENDING)
+  vehicleId       String
+  vehicle         Vehicle       @relation(fields: [vehicleId], references: [id])
+  driverId        String?
+  driver          Driver?       @relation(fields: [driverId], references: [id])
+  distanceKm      Float
+  fareBase        Float
+  fareTotal       Float
+  paymentStatus   String        @default("pending")
+  payments        Payment[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  @@index([tripDate, status])
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id])
+  amount      Float
+  mode        String
+  status      String
+  transaction String?
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  customer   String
+  rating     Int
+  content    String
+  approved   Boolean  @default(false)
+  source     String   @default("website")
+  createdAt  DateTime @default(now())
+}
+
+model Coupon {
+  id           String       @id @default(cuid())
+  code         String       @unique
+  discountType DiscountType
+  value        Float
+  validFrom    DateTime
+  validTo      DateTime
+  usageLimit   Int
+  usedCount    Int          @default(0)
+  conditions   String?
+}
+
+model BlogPost {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  excerpt        String
+  content        String
+  category       String
+  coverImage     String?
+  seoTitle       String?
+  seoDescription String?
+  published      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model CorporateClient {
+  id             String   @id @default(cuid())
+  companyName    String
+  gstin          String?
+  contactName    String
+  email          String   @unique
+  phone          String
+  creditLimit    Float    @default(0)
+  monthlyBilling Boolean  @default(true)
+  customRates    Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  email     String?
+  message   String
+  source    String
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String
+  message   String
+  channel   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
