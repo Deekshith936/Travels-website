@@ -6,8 +6,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#0f766e',
-        secondary: '#f59e0b'
+        brandGold: '#D4A853',
+        brandNavy: '#0A1E2E'
       }
     }
   },

@@ -11,7 +11,7 @@ async function main() {
     create: { name: 'Super Admin', email: 'admin@nayana.com', passwordHash, role: 'ADMIN' }
   });
 
-  const vehicles = [
+  const vehicles: [string, number, string][] = [
     ['Innova Crysta', 18, 'KA01AB1234'],
     ['Innova Hycross', 24, 'KA01AB2345'],
     ['Tempo Traveller', 28, 'KA01AB3456'],

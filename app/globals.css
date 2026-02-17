@@ -2,5 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body { @apply bg-slate-50 text-slate-900; }
-.card { @apply rounded-xl border bg-white shadow-sm; }
+body {
+  @apply bg-[#F9FAFB] text-[#111827] antialiased;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+h1, h2, h3, h4 {
+  font-family: Montserrat, Inter, system-ui, sans-serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', Georgia, serif;
+}
