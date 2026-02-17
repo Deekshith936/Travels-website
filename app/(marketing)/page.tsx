@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Building2, CheckCircle2, ExternalLink, HandHeart, MapPin, ShieldCheck, Star, UserCheck, Users } from 'lucide-react';
@@ -7,6 +8,24 @@ import { SiteHeader } from '@/components/site-header';
 import { WhatsappFloat } from '@/components/whatsapp-float';
 import { featuredVehicles, reviews, routes } from '@/lib/site-data';
 
+
+export const metadata: Metadata = {
+  title: 'Nayana Tours and Travels - Premium Cab Service in Bangalore',
+  description: "Bangalore's trusted travel partner for 15+ years. Premium cabs, verified drivers, and transparent pricing for South India travel.",
+  keywords: ['Bangalore cab service', 'outstation cabs', 'airport taxi', 'corporate travel', 'Innova Crysta'],
+  openGraph: {
+    title: 'Nayana Tours and Travels - Premium Cab Service',
+    description: '15+ years of trusted travel across Bangalore and South India.',
+    url: 'https://nayanatoursandtravels.com',
+    type: 'website'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nayana Tours - Premium Cab Service',
+    description: '15+ years trusted travel partner'
+  }
+};
+
 const services = [
   { title: 'Trusted Hygiene & Well-Maintained Vehicles', icon: ShieldCheck, description: 'Regular sanitization and maintenance. Clean, comfortable interiors for a premium experience.' },
   { title: 'Background-Verified Drivers', icon: UserCheck, description: 'Professional, courteous, and experienced drivers with local knowledge of routes.' },
@@ -15,9 +34,30 @@ const services = [
   { title: 'Event Management Partnerships', icon: Users, description: 'Experience in handling large groups, conferences, and premium events.' }
 ];
 
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Nayana Tours and Travels",
+  telephone: "+919742965513",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Gruhalakshmi Housing Colony, Nagasandra",
+    addressLocality: "Bangalore",
+    addressRegion: "Karnataka",
+    postalCode: "560073",
+    addressCountry: "IN"
+  },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5.0",
+    reviewCount: "15"
+  }
+};
+
 export default function HomePage() {
   return (
     <main className="bg-[#F9FAFB] text-[#111827]">
+      <script type="application/ld+json" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <SiteHeader />
       <HeroCarousel />
 
